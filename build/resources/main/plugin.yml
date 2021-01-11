@@ -1,0 +1,19 @@
+main: uk.nstr.perworldserver.PerWorldServer
+name: PerWorldServer
+version: 3.5
+author: Struck713
+description: This plugin seperates chats and tablists per world!
+api-version: 1.16
+
+commands:
+  perworldserver:
+    aliases: [pws]
+    description: Main plugin command
+
+permissions:
+  pws.*:
+    description: Wildcard (allows use of all commands)
+    default: op
+  pws.admin:
+    description: Allows you to use the main plugin command
+    default: op

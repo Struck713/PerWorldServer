@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+group 'uk.nstr.perworldserver'
+version '3.5-SNAPSHOT'
+libsDirName = 'C:/Users/Noah/Desktop/Servers/Test Server 3/plugins'
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    compileOnly group: 'org.spigotmc', name: 'spigot', version: '1.16.4-R0.1-SNAPSHOT'
+}
