@@ -1,12 +1,12 @@
-package uk.nstr.perworldserver.util.versions;
+package com.noah.pws.util.versions;
 
+import com.noah.pws.util.CloakUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import uk.nstr.perworldserver.util.CloakUtil;
 
-public class CloakUtil_1_16_R1 extends CloakUtil {
+public class CloakUtil_1_9_PLUS extends CloakUtil {
 
-    public CloakUtil_1_16_R1(JavaPlugin plugin) {
+    public CloakUtil_1_9_PLUS(JavaPlugin plugin) {
         super(plugin);
     }
 

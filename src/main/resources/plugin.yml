@@ -1,19 +1,21 @@
-main: uk.nstr.perworldserver.PerWorldServer
+main: com.noah.pws.PerWorldServer
 name: PerWorldServer
-version: 3.5
 author: Struck713
-description: This plugin seperates chats and tablists per world!
-api-version: 1.16
+version: 1.0
+api-version: 1.18
 
 commands:
-  perworldserver:
-    aliases: [pws]
-    description: Main plugin command
+  pws:
+    aliases: ['perworldserver']
+    permission: 'pws.admin'
+    description: 'Use this command to create, delete and modify suites.'
 
 permissions:
   pws.*:
-    description: Wildcard (allows use of all commands)
     default: op
+    description: 'Gives user access to all of the PWS commands.'
+    children:
+      - pws.admin
   pws.admin:
-    description: Allows you to use the main plugin command
     default: op
+    description: 'Allows user to use the ''/suite'' command.'

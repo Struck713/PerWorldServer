@@ -1,0 +1,6 @@
+name: main
+permission: suites.main
+worlds:
+  - 'world'
+  - 'world_the_end'
+  - 'world_nether'
