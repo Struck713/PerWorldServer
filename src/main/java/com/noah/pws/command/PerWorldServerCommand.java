@@ -4,6 +4,8 @@ import com.noah.pws.config.ConfigLang;
 import com.noah.pws.suite.Suite;
 import com.noah.pws.suite.SuiteManager;
 import com.noah.pws.util.StringUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,7 +45,13 @@ public class PerWorldServerCommand implements CommandExecutor {
                 }
 
                 String name = args[1];
+                Suite suite = this.suiteManager.getSuiteByName(name);
+                if (suite == null) {
+                    sender.sendMessage(PREFIX + StringUtil.colorize("&f" + name + "&f doesn't seem to be a suite."));
+                    return true;
+                }
 
+                displaySuiteInfo(suite, sender);
                 return true;
             }
         }
@@ -59,7 +67,7 @@ public class PerWorldServerCommand implements CommandExecutor {
                 if (args[1].equalsIgnoreCase("destroy")) {
                     Suite suite = this.suiteManager.getSuiteByName(name);
                     if (suite == null) {
-                        sender.sendMessage(PREFIX + StringUtil.colorize("There doesn't seem to be a suite with that name."));
+                        sender.sendMessage(PREFIX + StringUtil.colorize("&f" + name + "&f doesn't seem to be a suite."));
                         return true;
                     }
                     this.suiteManager.destroy(suite);
@@ -74,21 +82,50 @@ public class PerWorldServerCommand implements CommandExecutor {
         if (args.length == 4) {
             if (args[0].equalsIgnoreCase("suite")) {
                 String name = args[1];
+
+                Suite suite = this.suiteManager.getSuiteByName(name);
+                if (suite == null) {
+                    sender.sendMessage(PREFIX + StringUtil.colorize("&f" + name + "&7 doesn't seem to be a suite."));
+                    return true;
+                }
+
                 String value = args[3];
                 if (args[2].equalsIgnoreCase("add")) {
-                    // TODO add world
+                    World world = Bukkit.getWorld(value);
+                    if (world == null) {
+                        sender.sendMessage(PREFIX + StringUtil.colorize("&f" + value + "&7 doesn't seem to be a world."));
+                        return true;
+                    }
+                    if (this.suiteManager.getSuiteByWorld(world) != null) {
+                        sender.sendMessage(PREFIX + StringUtil.colorize("&f" + value + "&7 is already apart of another suite."));
+                        return true;
+                    }
+                    suite.addWorld(world);
+                    sender.sendMessage(PREFIX + StringUtil.colorize("The world, &f" + value + "&7, was added to &f" + name + "&7."));
                     return true;
                 }
                 if (args[2].equalsIgnoreCase("remove")) {
-                    // TODO remove world
+                    World world = Bukkit.getWorld(value);
+                    if (world == null) {
+                        sender.sendMessage(PREFIX + StringUtil.colorize("&f" + value + "&7 doesn't seem to be a world."));
+                        return true;
+                    }
+                    if (!suite.hasWorld(world)) {
+                        sender.sendMessage(PREFIX + StringUtil.colorize("&f" + value + "&7 is not apart of this suite."));
+                        return true;
+                    }
+                    suite.removeWorld(world);
+                    sender.sendMessage(PREFIX + StringUtil.colorize("The world, &f" + value + "&7, was removed from &f" + name + "&7."));
                     return true;
                 }
                 if (args[2].equalsIgnoreCase("permission")) {
-                    // TODO set permission
+                    suite.setPermission(value);
+                    sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's permission to &f" + value + "&7."));
                     return true;
                 }
                 if (args[2].equalsIgnoreCase("rename")) {
-                    // TODO set name
+                    suite.setName(value);
+                    sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's name to &f" + value + "&7."));
                     return true;
                 }
 
@@ -105,7 +142,7 @@ public class PerWorldServerCommand implements CommandExecutor {
     public void displaySuiteList(CommandSender sender) {
         StringBuilder builder = new StringBuilder();
         builder.append("&7&m----------------------\n");
-        builder.append("&3&lPerWorldServer &7- &f&lSuite List\n");
+        builder.append("&3&lPerWorldServer &7: &f&lSuite List\n");
         builder.append("  \n");
 
         this.suiteManager.getAllSuites().forEach(suite -> builder.append("&7 - &3" + suite.getName() + "  &f" + suite.getWorlds().size() + " world(s)\n"));
@@ -116,10 +153,33 @@ public class PerWorldServerCommand implements CommandExecutor {
         sender.sendMessage(StringUtil.colorize(builder.toString()));
     }
 
+    public void displaySuiteInfo(Suite suite, CommandSender sender) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("&7&m----------------------\n");
+        builder.append("&3&lPerWorldServer &7: &f&lSuite Information\n");
+        builder.append("  \n");
+        builder.append("  &3File: &f" + suite.getFile() + "\n");
+        builder.append("  &3Name: &f" + suite.getName() + "\n");
+        builder.append("  &3Permission: &f" + suite.getPermission() + "\n");
+
+        if (!suite.getWorlds().isEmpty()) {
+            builder.append("  &3Worlds: \n");
+            suite.getWorlds().forEach(world -> builder.append("    &7- &f" + world.getName() + "\n"));
+        } else {
+            builder.append("  &3Worlds: &fNone\n");
+        }
+
+        builder.append("  \n");
+        builder.append("&7&m----------------------");
+
+        sender.sendMessage(StringUtil.colorize(builder.toString()));
+    }
+
     public void displayHelpSuites(CommandSender sender) {
         sender.sendMessage(StringUtil.colorize(
         "&7&m----------------------\n" +
-                "&3&lPerWorldServer &7- &f&lSuites\n" +
+                "&3&lPerWorldServer &7: &f&lSuites\n" +
                 "  \n" +
                 "&7 - &3/pws suite <name>  &fLists suite information\n" +
                 "&7 - &3/pws suite create <name>  &fCreates a suite\n" +

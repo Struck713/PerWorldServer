@@ -42,19 +42,31 @@ public class Suite {
         this.getPlayers().forEach(player -> player.sendMessage(message));
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
     public boolean addWorld(World world) {
         if (world == null) return false;
-        return worlds.add(world.getName());
+        return this.worlds.add(world.getName());
     }
 
     public boolean removeWorld(World world) {
         if (world == null) return false;
-        return worlds.remove(world.getName());
+        return this.worlds.remove(world.getName());
     }
 
     public boolean hasWorld(World world) {
         if (world == null) return false;
-        return worlds.contains(world.getName());
+        return this.worlds.contains(world.getName());
+    }
+
+    public String getPermission() {
+        return this.permission;
     }
 
     public String getName() {

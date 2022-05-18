@@ -3,6 +3,8 @@ package com.noah.pws.command;
 import com.noah.pws.suite.Suite;
 import com.noah.pws.suite.SuiteManager;
 import com.noah.pws.util.StringUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -41,6 +43,13 @@ public class PerWorldServerTabComplete implements TabCompleter {
             }
         }
 
+        if (args.length == 4) {
+            if (args[0].equalsIgnoreCase("suite")) {
+                if (!(args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("remove"))) return new ArrayList<>();
+                return getWorlds();
+            }
+        }
+
         return new ArrayList<>();
     }
 
@@ -48,6 +57,13 @@ public class PerWorldServerTabComplete implements TabCompleter {
         return this.suiteManager.getAllSuites()
                 .stream()
                 .map(Suite::getName)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getWorlds() {
+        return Bukkit.getWorlds()
+                .stream()
+                .map(World::getName)
                 .collect(Collectors.toList());
     }
 
