@@ -11,6 +11,7 @@ import com.noah.pws.suite.SuiteManager;
 import com.noah.pws.util.CloakUtil;
 import com.noah.pws.util.FileUtil;
 import com.noah.pws.util.UpdateUtil;
+import com.noah.pws.util.versions.CloakUtil_1_8_BELOW;
 import com.noah.pws.util.versions.CloakUtil_1_9_PLUS;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -54,6 +55,31 @@ public class PerWorldServer extends JavaPlugin {
         mainCommand.setExecutor(new PerWorldServerCommand(this.suiteManager, this.addonManager, this.settings));
         mainCommand.setTabCompleter(new PerWorldServerTabComplete(this.suiteManager));
 
+        String version = getVersion();
+        String subVersion = version.substring(1, version.length() - 3);
+        getLogger().info("[CloakUtil] Found version " + version + " of CraftBukkit.");
+        switch (subVersion) {
+            case "1_9":
+            case "1_8":
+                this.cloakUtil = new CloakUtil_1_8_BELOW(this);
+                break;
+            case "1_18":
+            case "1_17":
+            case "1_16":
+            case "1_15":
+            case "1_14":
+            case "1_13":
+            case "1_12":
+            case "1_11":
+            case "1_10":
+                this.cloakUtil = new CloakUtil_1_9_PLUS(this);
+                break;
+            default:
+                getLogger().info("[CloakUtil] You have an unsupported version of CraftBukkit, try updating!");
+                pluginManager.disablePlugin(this);
+                break;
+        }
+
         UpdateUtil updateChecker = new UpdateUtil(this, this.settings.isCheckForUpdates());
         switch (updateChecker.check()) {
             case OUT_OF_DATE:
@@ -73,6 +99,11 @@ public class PerWorldServer extends JavaPlugin {
         File directory = this.getDataFolder();
         if (!directory.exists()) directory.mkdirs();
         return new File(directory, FileUtil.PATH_SEPARATOR);
+    }
+
+    public String getVersion() {
+        final String packageName = this.getServer().getClass().getPackage().getName();
+        return packageName.substring(packageName.lastIndexOf('.') + 1);
     }
 
 }

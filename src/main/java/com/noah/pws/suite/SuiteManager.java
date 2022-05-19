@@ -51,7 +51,7 @@ public class SuiteManager {
             }
 
             this.suites.add(suite);
-            plugin.getLogger().info("Loaded suite, " + name + " with " + worlds.size() + " worlds.");
+            plugin.getLogger().info("[SuiteManager] Loaded suite, " + name + " with " + worlds.size() + " worlds.");
         }
 
         // if we build and have no suites, we need to init
@@ -71,7 +71,7 @@ public class SuiteManager {
             try {
                 file.createNewFile();
             } catch (Exception e) {
-                plugin.getLogger().info("Failed to create file for suite, " + name + ".");
+                plugin.getLogger().info("[SuiteManager] Failed to create file for suite, " + name + ".");
             }
         }
 

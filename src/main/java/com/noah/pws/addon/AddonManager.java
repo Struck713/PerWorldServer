@@ -69,7 +69,7 @@ public class AddonManager {
         final PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.callEvent(new AddonEnableEvent(addon));
 
-        this.plugin.getLogger().info("Loaded addon, " + addon.getName() + " v" + addon.getVersion() + ".");
+        this.plugin.getLogger().info("[AddonManager] Loaded addon, " + addon.getName() + " v" + addon.getVersion() + ".");
     }
 
     public void unload(Addon addon, boolean remove) {

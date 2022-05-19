@@ -1,8 +1,9 @@
 main: com.noah.pws.PerWorldServer
 name: PerWorldServer
 author: Struck713
-version: 4.0
-api-version: 1.18
+description: Separate your chat and tab list on a per world basis!
+api-version: 1.13
+version: 4.1
 
 commands:
   pws:
