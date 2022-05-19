@@ -1,7 +1,9 @@
 package com.noah.pws.suite;
 
+import com.noah.pws.util.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -16,6 +18,7 @@ public class Suite {
     private String name;
     private String permission;
     private List<String> worlds;
+    private Location spawn;
 
     public Suite(File file,
                  String name,
@@ -32,6 +35,7 @@ public class Suite {
         configuration.set("name", this.name);
         configuration.set("permission", this.permission);
         configuration.set("worlds", this.worlds);
+        if (this.spawn != null) LocationUtil.serialize(configuration.createSection("spawn"), this.spawn);
 
         try {
             configuration.save(this.file);
@@ -52,6 +56,10 @@ public class Suite {
         this.permission = permission;
     }
 
+    public void setSpawn(Location spawn) {
+        this.spawn = spawn;
+    }
+
     public boolean addWorld(World world) {
         if (world == null) return false;
         return this.worlds.add(world.getName());
@@ -67,17 +75,10 @@ public class Suite {
         return this.worlds.contains(world.getName());
     }
 
-    public String getPermission() {
-        return this.permission;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public File getFile() {
-        return this.file;
-    }
+    public File getFile() { return this.file; }
+    public String getName() { return this.name; }
+    public String getPermission() { return this.permission; }
+    public Location getSpawn() { return this.spawn; }
 
     public List<World> getWorlds() {
         return this.worlds.stream()

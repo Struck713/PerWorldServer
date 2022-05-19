@@ -25,7 +25,7 @@ public class PerWorldServer extends JavaPlugin {
     private CloakUtil cloakUtil;
 
     private ConfigSettings settings;
-    private ConfigLang language;
+    //private ConfigLang language;
 
     @Override
     public void onEnable() {
@@ -39,8 +39,8 @@ public class PerWorldServer extends JavaPlugin {
 
         // config
         this.settings = new ConfigSettings(this);
-        this.language = new ConfigLang(this);
-        Config.load(this.settings, this.language);
+        //this.language = new ConfigLang(this);
+        Config.load(this.settings /*, this.language */);
 
         // listeners
         final PluginManager pluginManager = Bukkit.getPluginManager();
@@ -48,7 +48,7 @@ public class PerWorldServer extends JavaPlugin {
 
         // commands
         PluginCommand mainCommand = getCommand("pws");
-        mainCommand.setExecutor(new PerWorldServerCommand(this.suiteManager, this.language));
+        mainCommand.setExecutor(new PerWorldServerCommand(this.suiteManager, this.settings));
         mainCommand.setTabCompleter(new PerWorldServerTabComplete(this.suiteManager));
     }
 

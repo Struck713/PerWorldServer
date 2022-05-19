@@ -1,6 +1,7 @@
 package com.noah.pws.config;
 
 import com.noah.pws.PerWorldServer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -18,13 +19,17 @@ public abstract class Config {
     public Config(PerWorldServer plugin, String name) {
         this.plugin = plugin;
         this.name = name;
-
-        File file = new File(plugin.getPluginFolder(), this.name);
-        if (!file.exists()) plugin.saveResource(this.name, false);
-        this.configuration = YamlConfiguration.loadConfiguration(file);
+        this.reload(false);
     }
 
     public abstract void load();
+
+    public void reload(boolean load) {
+        File file = new File(plugin.getPluginFolder(), this.name);
+        if (!file.exists()) plugin.saveResource(this.name, false);
+        this.configuration = YamlConfiguration.loadConfiguration(file);
+        if (load) this.load();
+    }
 
     public String getName() {
         return this.name;

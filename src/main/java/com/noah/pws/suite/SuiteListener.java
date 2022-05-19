@@ -1,6 +1,7 @@
 package com.noah.pws.suite;
 
 import com.noah.pws.suite.event.SuiteChangeEvent;
+import com.noah.pws.suite.event.SuiteChatEvent;
 import com.noah.pws.util.CloakUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -27,11 +28,14 @@ public class SuiteListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         World world = player.getWorld();
+        String message = event.getMessage();
 
         event.getRecipients().clear();
 
         Suite suite = this.suiteManager.getSuiteByWorld(world);
         event.getRecipients().addAll(suite.getPlayers());
+
+        Bukkit.getPluginManager().callEvent(new SuiteChatEvent(suite, player, message));
 
     }
 

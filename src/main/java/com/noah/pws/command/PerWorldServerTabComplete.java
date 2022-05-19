@@ -39,7 +39,7 @@ public class PerWorldServerTabComplete implements TabCompleter {
                 if (args[1].equalsIgnoreCase("destroy")) {
                     return getSuites();
                 }
-                return Arrays.asList("add", "remove", "permission", "rename");
+                return Arrays.asList("add", "remove", "permission", "rename", "spawn");
             }
         }
 

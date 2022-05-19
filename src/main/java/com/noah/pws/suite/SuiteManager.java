@@ -2,9 +2,13 @@ package com.noah.pws.suite;
 
 import com.noah.pws.PerWorldServer;
 import com.noah.pws.util.FileUtil;
+import com.noah.pws.util.LocationUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -36,7 +40,14 @@ public class SuiteManager {
             List<String> worlds = suiteConf.getStringList("worlds");
             worlds.removeIf(worldName -> Bukkit.getWorld(worldName) == null); // clean up worlds that don't exist
 
-            this.suites.add(new Suite(suiteFile, name, permission, worlds));
+            Suite suite = new Suite(suiteFile, name, permission, worlds);
+
+            if (suiteConf.isConfigurationSection("spawn")) {
+                ConfigurationSection spawnSection = suiteConf.getConfigurationSection("spawn");
+                suite.setSpawn(LocationUtil.deserialize(spawnSection));
+            }
+
+            this.suites.add(suite);
             plugin.getLogger().info("Loaded suite, " + name + " with " + worlds.size() + " worlds.");
         }
 
@@ -69,6 +80,13 @@ public class SuiteManager {
     public void destroy(Suite suite) {
         suite.getFile().delete();
         suites.remove(suite);
+    }
+
+    public boolean send(Player player, Suite suite) {
+        Location spawn = suite.getSpawn();
+        if (spawn == null) return false;
+        player.teleport(spawn);
+        return true;
     }
 
     public Suite getSuiteByName(String name) {

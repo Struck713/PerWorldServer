@@ -1,25 +1,29 @@
 package com.noah.pws.command;
 
 import com.noah.pws.config.ConfigLang;
+import com.noah.pws.config.ConfigSettings;
 import com.noah.pws.suite.Suite;
 import com.noah.pws.suite.SuiteManager;
+import com.noah.pws.util.LocationUtil;
 import com.noah.pws.util.StringUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class PerWorldServerCommand implements CommandExecutor {
 
     private static final String PREFIX = StringUtil.colorize("&8[&3PWS&8] &7");
 
     private SuiteManager suiteManager;
-    private ConfigLang language;
+    private ConfigSettings settings;
 
-    public PerWorldServerCommand(SuiteManager suiteManager, ConfigLang language) {
+    public PerWorldServerCommand(SuiteManager suiteManager, ConfigSettings settings) {
         this.suiteManager = suiteManager;
-        this.language = language;
+        this.settings = settings;
     }
 
     @Override
@@ -28,7 +32,8 @@ public class PerWorldServerCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("suite")) { displayHelpSuites(sender); return true; }
             if (args[0].equalsIgnoreCase("addons")) { return true; }
             if (args[0].equalsIgnoreCase("reload")) {
-                // TODO reload configs
+                this.settings.reload(true);
+                sender.sendMessage(PREFIX + StringUtil.colorize("Successfully reloaded &fconfig.yml&7."));
                 return true;
             }
         }
@@ -130,6 +135,17 @@ public class PerWorldServerCommand implements CommandExecutor {
                     sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's name to &f" + value + "&7."));
                     return true;
                 }
+                if (args[2].equalsIgnoreCase("spawn")) {
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage(PREFIX + "Please use this command in-game.");
+                    }
+                    Player player = (Player)sender;
+                    Location location = player.getLocation();
+                    suite.setSpawn(location);
+
+                    sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's spawn to &f" + LocationUtil.toString(location) + "&7."));
+                    return true;
+                }
 
                 displayHelpSuites(sender);
                 return true;
@@ -191,6 +207,7 @@ public class PerWorldServerCommand implements CommandExecutor {
                 "&7 - &3/pws suite <name> remove <world>  &fRemoves a world from a suite\n" +
                 "&7 - &3/pws suite <name> permission <world>  &fSets suite permission\n" +
                 "&7 - &3/pws suite <name> rename <new name>  &fChanges suite name\n" +
+                "&7 - &3/pws suite <name> spawn  &fSets suite spawn to current location\n" +
                 "  \n" +
                 "&7 - &3/pws suite list  &fLists all suites\n" +
                 "&7 - &3/pws suite reload  &fSaves and reloads all suites\n" +
