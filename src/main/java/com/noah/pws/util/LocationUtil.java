@@ -26,11 +26,11 @@ public class LocationUtil {
         if (section.isDouble("pitch")) location.setPitch((float) section.getDouble("pitch"));
         if (section.isDouble("yaw")) location.setYaw((float) section.getDouble("yaw"));
 
-        return  location;
+        return location;
     }
 
     public static String toString(Location location) {
-        return location.getX() + ", " + location.getY() + ", " + location.getZ();
+        return "[" + location.getWorld().getName() + ": " + location.getX() + ", " + location.getY() + ", " + location.getZ() + "]";
     }
 
 }

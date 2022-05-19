@@ -3,6 +3,7 @@ package com.noah.pws.addon;
 import com.noah.pws.suite.Suite;
 import com.noah.pws.suite.SuiteManager;
 import com.noah.pws.suite.event.SuiteChangeEvent;
+import com.noah.pws.suite.event.SuiteChatEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,6 +30,15 @@ public class AddonListener implements Listener {
 
         if (from != null) this.addonManager.forEach(addon -> addon.onQuit(from, player));
         if (to != null) this.addonManager.forEach(addon -> addon.onJoin(to, player));
+    }
+
+    @EventHandler
+    public void onChat(SuiteChatEvent event) {
+        Suite suite = event.getSuite();
+        Player player = event.getPlayer();
+        String message = event.getMessage();
+
+        this.addonManager.forEach(addon -> addon.onChat(suite, player, message));
     }
 
     @EventHandler

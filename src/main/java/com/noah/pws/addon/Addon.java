@@ -26,6 +26,7 @@ public class Addon {
 
     public void onJoin(Suite suite, Player player) {}
     public void onQuit(Suite suite, Player player) {}
+    public void onChat(Suite suite, Player player, String message) {}
 
     public String getName() {
         return this.name;

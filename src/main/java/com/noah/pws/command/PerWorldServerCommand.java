@@ -81,6 +81,21 @@ public class PerWorldServerCommand implements CommandExecutor {
                     sender.sendMessage(PREFIX + StringUtil.colorize("The suite, &f" + name + "&7, was removed."));
                     return true;
                 }
+
+                if (args[2].equalsIgnoreCase("spawn")) {
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage(PREFIX + "Please use this command in-game.");
+                    }
+                    Player player = (Player)sender;
+                    Location location = player.getLocation();
+                    World world = player.getWorld();
+
+                    Suite suite = this.suiteManager.getSuiteByWorld(world);
+                    suite.setSpawn(location);
+
+                    sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's spawn to &f" + LocationUtil.toString(location) + "&7."));
+                    return true;
+                }
                 displayHelpSuites(sender);
                 return true;
             }
@@ -135,17 +150,6 @@ public class PerWorldServerCommand implements CommandExecutor {
                     sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's name to &f" + value + "&7."));
                     return true;
                 }
-                if (args[2].equalsIgnoreCase("spawn")) {
-                    if (!(sender instanceof Player)) {
-                        sender.sendMessage(PREFIX + "Please use this command in-game.");
-                    }
-                    Player player = (Player)sender;
-                    Location location = player.getLocation();
-                    suite.setSpawn(location);
-
-                    sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's spawn to &f" + LocationUtil.toString(location) + "&7."));
-                    return true;
-                }
 
                 displayHelpSuites(sender);
                 return true;
@@ -180,6 +184,7 @@ public class PerWorldServerCommand implements CommandExecutor {
         builder.append("  &3File: &f" + suite.getFile() + "\n");
         builder.append("  &3Name: &f" + suite.getName() + "\n");
         builder.append("  &3Permission: &f" + suite.getPermission() + "\n");
+        builder.append("  &3Spawn: &f" + LocationUtil.toString(suite.getSpawn()) + "\n");
 
         if (!suite.getWorlds().isEmpty()) {
             builder.append("  &3Worlds: \n");

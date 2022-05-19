@@ -1,5 +1,6 @@
 package com.noah.pws.suite;
 
+import com.noah.pws.PerWorldServer;
 import com.noah.pws.suite.event.SuiteChangeEvent;
 import com.noah.pws.suite.event.SuiteChatEvent;
 import com.noah.pws.util.CloakUtil;
@@ -13,13 +14,16 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SuiteListener implements Listener {
 
+    private PerWorldServer plugin;
     private SuiteManager suiteManager;
     private CloakUtil cloakUtil;
 
-    public SuiteListener(SuiteManager suiteManager, CloakUtil cloakUtil) {
+    public SuiteListener(PerWorldServer plugin, SuiteManager suiteManager, CloakUtil cloakUtil) {
+        this.plugin = plugin;
         this.suiteManager = suiteManager;
         this.cloakUtil = cloakUtil;
     }
@@ -35,7 +39,12 @@ public class SuiteListener implements Listener {
         Suite suite = this.suiteManager.getSuiteByWorld(world);
         event.getRecipients().addAll(suite.getPlayers());
 
-        Bukkit.getPluginManager().callEvent(new SuiteChatEvent(suite, player, message));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getPluginManager().callEvent(new SuiteChatEvent(suite, player, message));
+            }
+        }.runTask(this.plugin);
 
     }
 

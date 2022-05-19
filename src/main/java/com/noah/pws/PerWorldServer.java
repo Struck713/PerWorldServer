@@ -44,7 +44,7 @@ public class PerWorldServer extends JavaPlugin {
 
         // listeners
         final PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new SuiteListener(this.suiteManager, this.cloakUtil), this);
+        pluginManager.registerEvents(new SuiteListener(this, this.suiteManager, this.cloakUtil), this);
 
         // commands
         PluginCommand mainCommand = getCommand("pws");

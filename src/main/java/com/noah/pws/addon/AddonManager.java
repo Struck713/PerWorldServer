@@ -1,7 +1,7 @@
 package com.noah.pws.addon;
 
 import com.noah.pws.PerWorldServer;
-import com.noah.pws.addon.addons.AddonBungeeCommands;
+import com.noah.pws.addon.addons.AddonGlobalMessages;
 import com.noah.pws.addon.addons.AddonServerMessages;
 import com.noah.pws.addon.event.AddonDisableEvent;
 import com.noah.pws.addon.event.AddonEnableEvent;
@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
@@ -35,7 +34,8 @@ public class AddonManager {
 
         // init our addons
         this.load(new AddonServerMessages());
-        this.load(new AddonBungeeCommands());
+        this.load(new AddonGlobalMessages());
+        //this.load(new AddonBungeeCommands());
     }
 
     public void loadAll() {

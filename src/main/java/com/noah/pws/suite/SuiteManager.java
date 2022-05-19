@@ -26,6 +26,9 @@ public class SuiteManager {
     }
 
     public void loadAll() {
+
+        this.suites.clear(); // reset list
+
         for (File suiteFile : this.getSuitesFolder().listFiles()) {
             if (!suiteFile.isFile() || !suiteFile.getName().endsWith(".yml")) continue; //skip non-yaml files
 
