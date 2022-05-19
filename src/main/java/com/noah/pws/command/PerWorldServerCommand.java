@@ -1,11 +1,11 @@
 package com.noah.pws.command;
 
-import com.noah.pws.config.ConfigLang;
 import com.noah.pws.config.ConfigSettings;
 import com.noah.pws.suite.Suite;
 import com.noah.pws.suite.SuiteManager;
 import com.noah.pws.util.LocationUtil;
 import com.noah.pws.util.StringUtil;
+import com.noah.pws.util.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -17,6 +17,30 @@ import org.bukkit.entity.Player;
 public class PerWorldServerCommand implements CommandExecutor {
 
     private static final String PREFIX = StringUtil.colorize("&8[&3PWS&8] &7");
+    private static final String HELP_MENU = StringUtil.makeMenu(
+            "PerWorldServer",
+            null,
+            Pair.of("/pws", "Shows this menu"),
+            Pair.of("/pws suite", "Shows suites help menu"),
+            Pair.of("/pws addon", "Shows addons help menu"),
+            Pair.of("/pws reload", "Reloads configurations")
+    );
+
+    private static final String HELP_MENU_SUITES = StringUtil.makeMenu(
+            "PerWorldServer",
+            "Suites",
+            Pair.of("/pws suite <name>", "Lists suite information"),
+            Pair.of("/pws suite create <name>", "Creates a suite"),
+            Pair.of("/pws suite destroy <name>", "Destroys a suite"),
+            null,
+            Pair.of("/pws suite <name> add <world>", "Adds a world to a suite"),
+            Pair.of("/pws suite <name> remove <world>", "Removes a world from a suite"),
+            Pair.of("/pws suite <name> permission <world>", "Sets suite permission"),
+            Pair.of("/pws suite <name> rename <new name>", "Changes suite name"),
+            Pair.of("/pws suite <name> spawn", "Sets suite spawn to current location"),
+            null,
+            Pair.of("/pws suite list", "Lists all suites"),
+            Pair.of("/pws suite reload", "Saves and reloads all suites"));
 
     private SuiteManager suiteManager;
     private ConfigSettings settings;
@@ -29,7 +53,7 @@ public class PerWorldServerCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("suite")) { displayHelpSuites(sender); return true; }
+            if (args[0].equalsIgnoreCase("suite")) { sender.sendMessage(HELP_MENU_SUITES); return true; }
             if (args[0].equalsIgnoreCase("addons")) { return true; }
             if (args[0].equalsIgnoreCase("reload")) {
                 this.settings.reload(true);
@@ -96,7 +120,8 @@ public class PerWorldServerCommand implements CommandExecutor {
                     sender.sendMessage(PREFIX + StringUtil.colorize("Set &f" + name + "&7's spawn to &f" + LocationUtil.toString(location) + "&7."));
                     return true;
                 }
-                displayHelpSuites(sender);
+                
+                sender.sendMessage(HELP_MENU_SUITES);
                 return true;
             }
         }
@@ -151,13 +176,13 @@ public class PerWorldServerCommand implements CommandExecutor {
                     return true;
                 }
 
-                displayHelpSuites(sender);
+                sender.sendMessage(HELP_MENU_SUITES);
                 return true;
             }
         }
 
         // help menu
-        displayHelp(sender);
+        sender.sendMessage(HELP_MENU);
         return true;
     }
 
@@ -199,41 +224,26 @@ public class PerWorldServerCommand implements CommandExecutor {
         sender.sendMessage(StringUtil.colorize(builder.toString()));
     }
 
-    public void displayHelpSuites(CommandSender sender) {
+    public void displayHelpAddons(CommandSender sender) {
         sender.sendMessage(StringUtil.colorize(
-        "&7&m----------------------\n" +
-                "&3&lPerWorldServer &7: &f&lSuites\n" +
-                "  \n" +
-                "&7 - &3/pws suite <name>  &fLists suite information\n" +
-                "&7 - &3/pws suite create <name>  &fCreates a suite\n" +
-                "&7 - &3/pws suite destroy <name>  &fDestroys a suite\n" +
-                "  \n" +
-                "&7 - &3/pws suite <name> add <world>  &fAdds a world to a suite\n" +
-                "&7 - &3/pws suite <name> remove <world>  &fRemoves a world from a suite\n" +
-                "&7 - &3/pws suite <name> permission <world>  &fSets suite permission\n" +
-                "&7 - &3/pws suite <name> rename <new name>  &fChanges suite name\n" +
-                "&7 - &3/pws suite <name> spawn  &fSets suite spawn to current location\n" +
-                "  \n" +
-                "&7 - &3/pws suite list  &fLists all suites\n" +
-                "&7 - &3/pws suite reload  &fSaves and reloads all suites\n" +
-                "  \n" +
-                "&7&m----------------------"
+                "&7&m----------------------\n" +
+                        "&3&lPerWorldServer &7: &f&lSuites\n" +
+                        "  \n" +
+                        "&7 - &3/pws suite <name>  &fLists suite information\n" +
+                        "&7 - &3/pws suite create <name>  &fCreates a suite\n" +
+                        "&7 - &3/pws suite destroy <name>  &fDestroys a suite\n" +
+                        "  \n" +
+                        "&7 - &3/pws suite <name> add <world>  &fAdds a world to a suite\n" +
+                        "&7 - &3/pws suite <name> remove <world>  &fRemoves a world from a suite\n" +
+                        "&7 - &3/pws suite <name> permission <world>  &fSets suite permission\n" +
+                        "&7 - &3/pws suite <name> rename <new name>  &fChanges suite name\n" +
+                        "&7 - &3/pws suite <name> spawn  &fSets suite spawn to current location\n" +
+                        "  \n" +
+                        "&7 - &3/pws suite list  &fLists all suites\n" +
+                        "&7 - &3/pws suite reload  &fSaves and reloads all suites\n" +
+                        "  \n" +
+                        "&7&m----------------------"
         ));
     }
-
-    public void displayHelp(CommandSender sender) {
-        sender.sendMessage(StringUtil.colorize(
-        "&7&m----------------------\n" +
-                "&3&lPerWorldServer\n" +
-                "  \n" +
-                "&7 - &3/pws  &fShows this menu\n" +
-                "&7 - &3/pws suite  &fShows suites help menu\n" +
-                "&7 - &3/pws addon  &fShows addons help menu\n" +
-                "&7 - &3/pws reload  &fReloads configurations\n" +
-                "  \n" +
-                "&7&m----------------------"
-        ));
-    }
-
 
 }
