@@ -26,8 +26,10 @@ public class PerWorldServerCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("suite")) { displayHelpSuites(sender); return true; }
+            if (args[0].equalsIgnoreCase("addons")) { return true; }
             if (args[0].equalsIgnoreCase("reload")) {
                 // TODO reload configs
+                return true;
             }
         }
 
@@ -204,6 +206,7 @@ public class PerWorldServerCommand implements CommandExecutor {
                 "  \n" +
                 "&7 - &3/pws  &fShows this menu\n" +
                 "&7 - &3/pws suite  &fShows suites help menu\n" +
+                "&7 - &3/pws addon  &fShows addons help menu\n" +
                 "&7 - &3/pws reload  &fReloads configurations\n" +
                 "  \n" +
                 "&7&m----------------------"

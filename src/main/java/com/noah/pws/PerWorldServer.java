@@ -1,5 +1,6 @@
 package com.noah.pws;
 
+import com.noah.pws.addon.AddonManager;
 import com.noah.pws.command.PerWorldServerCommand;
 import com.noah.pws.command.PerWorldServerTabComplete;
 import com.noah.pws.config.Config;
@@ -20,6 +21,7 @@ import java.io.File;
 public class PerWorldServer extends JavaPlugin {
 
     private SuiteManager suiteManager;
+    private AddonManager addonManager;
     private CloakUtil cloakUtil;
 
     private ConfigSettings settings;
@@ -27,9 +29,12 @@ public class PerWorldServer extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        // managers
         this.suiteManager = new SuiteManager(this);
         this.suiteManager.loadAll();
-
+        this.addonManager = new AddonManager(this, this.suiteManager);
+        this.addonManager.loadAll();
         this.cloakUtil = new CloakUtil_1_9_PLUS(this);
 
         // config
@@ -41,7 +46,7 @@ public class PerWorldServer extends JavaPlugin {
         final PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new SuiteListener(this.suiteManager, this.cloakUtil), this);
 
-        //commands
+        // commands
         PluginCommand mainCommand = getCommand("pws");
         mainCommand.setExecutor(new PerWorldServerCommand(this.suiteManager, this.language));
         mainCommand.setTabCompleter(new PerWorldServerTabComplete(this.suiteManager));

@@ -1,6 +1,8 @@
 package com.noah.pws.suite;
 
+import com.noah.pws.suite.event.SuiteChangeEvent;
 import com.noah.pws.util.CloakUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 
 public class SuiteListener implements Listener {
@@ -56,6 +59,22 @@ public class SuiteListener implements Listener {
                 .forEach(suite -> {
                     this.cloakUtil.hide(suite, player); //hide player from those worlds
                 });
+
+        Bukkit.getPluginManager().callEvent(new SuiteChangeEvent(player, null, currentSuite));
+
+        // always disable join message
+        event.setJoinMessage(null);
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        Suite currentSuite = this.suiteManager.getSuiteByWorld(player.getWorld());
+
+        Bukkit.getPluginManager().callEvent(new SuiteChangeEvent(player, currentSuite, null));
+
+        // always disable leave message
+        event.setQuitMessage(null);
     }
 
     @EventHandler
@@ -68,6 +87,9 @@ public class SuiteListener implements Listener {
         this.cloakUtil.showASuite(player, to);
         this.cloakUtil.hide(from, player); //hide player in old world
         this.cloakUtil.show(to, player); //show player in new world
+
+        Bukkit.getPluginManager().callEvent(new SuiteChangeEvent(player, from, to));
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.noah.pws.suite;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -40,6 +41,7 @@ public class Suite {
 
     public void broadcast(String message) {
         this.getPlayers().forEach(player -> player.sendMessage(message));
+        System.out.println("[" + this.name + "] " + ChatColor.stripColor(message));
     }
 
     public void setName(String name) {
