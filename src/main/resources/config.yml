@@ -1,2 +1,11 @@
+#
+#  ____                 __        __                 _       _   ____
+# |  _ \    ___   _ __  \ \      / /   ___    _ __  | |   __| | / ___|    ___   _ __  __   __   ___   _ __
+# | |_) |  / _ \ | '__|  \ \ /\ / /   / _ \  | '__| | |  / _` | \___ \   / _ \ | '__| \ \ / /  / _ \ | '__|
+# |  __/  |  __/ | |      \ V  V /   | (_) | | |    | | | (_| |  ___) | |  __/ | |     \ V /  |  __/ | |
+# |_|      \___| |_|       \_/\_/     \___/  |_|    |_|  \__,_| |____/   \___| |_|      \_/    \___| |_|
+#
+# Created by Struck713 (https://www.spigotmc.org/members/struck713.129781/)
+
 # This is enabled by default, it will notify you in config if there is a plugin update.
 check-for-updates: true

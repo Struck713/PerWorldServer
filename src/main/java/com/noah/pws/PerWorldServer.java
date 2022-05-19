@@ -10,6 +10,7 @@ import com.noah.pws.suite.SuiteListener;
 import com.noah.pws.suite.SuiteManager;
 import com.noah.pws.util.CloakUtil;
 import com.noah.pws.util.FileUtil;
+import com.noah.pws.util.UpdateUtil;
 import com.noah.pws.util.versions.CloakUtil_1_9_PLUS;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -29,6 +30,8 @@ public class PerWorldServer extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        //another switch statement of course
 
         // managers
         this.suiteManager = new SuiteManager(this);
@@ -50,6 +53,17 @@ public class PerWorldServer extends JavaPlugin {
         PluginCommand mainCommand = getCommand("pws");
         mainCommand.setExecutor(new PerWorldServerCommand(this.suiteManager, this.addonManager, this.settings));
         mainCommand.setTabCompleter(new PerWorldServerTabComplete(this.suiteManager));
+
+        UpdateUtil updateChecker = new UpdateUtil(this, this.settings.isCheckForUpdates());
+        switch (updateChecker.check()) {
+            case OUT_OF_DATE:
+                getLogger().info("An update for PerWorldServer (" + updateChecker.getNewVersion() + ") was found. Please update at: https://www.spigotmc.org/resources/23989/");
+                break;
+            case UP_TO_DATE:
+            default:
+                break;
+        }
+
     }
 
     @Override

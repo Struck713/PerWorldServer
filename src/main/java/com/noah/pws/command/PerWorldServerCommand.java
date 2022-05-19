@@ -64,7 +64,7 @@ public class PerWorldServerCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("suite")) { sender.sendMessage(HELP_MENU_SUITES); return true; }
-            if (args[0].equalsIgnoreCase("addons")) { sender.sendMessage(HELP_MENU_ADDONS); return true; }
+            if (args[0].equalsIgnoreCase("addon")) { sender.sendMessage(HELP_MENU_ADDONS); return true; }
             if (args[0].equalsIgnoreCase("reload")) {
                 this.settings.reload(true);
                 sender.sendMessage(PREFIX + StringUtil.colorize("Successfully reloaded &fconfig.yml&7."));
