@@ -48,7 +48,7 @@ public class PerWorldServer extends JavaPlugin {
 
         // commands
         PluginCommand mainCommand = getCommand("pws");
-        mainCommand.setExecutor(new PerWorldServerCommand(this.suiteManager, this.settings));
+        mainCommand.setExecutor(new PerWorldServerCommand(this.suiteManager, this.addonManager, this.settings));
         mainCommand.setTabCompleter(new PerWorldServerTabComplete(this.suiteManager));
     }
 

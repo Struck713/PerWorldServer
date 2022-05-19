@@ -32,6 +32,9 @@ public class PerWorldServerTabComplete implements TabCompleter {
                 toRet.addAll(Arrays.asList("list", "reload", "create", "destroy"));
                 return toRet;
             }
+            if (args[0].equalsIgnoreCase("addon")) {
+                return Arrays.asList("list", "reload");
+            }
         }
 
         if (args.length == 3) {

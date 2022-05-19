@@ -41,7 +41,9 @@ public class AddonServerMessages extends Addon {
     @Override
     public void onJoin(Suite suite, Player player) {
         if (!this.enabled) return;
-        suite.broadcast(this.joinMessage.replaceAll("%player%", player.getName()));
+        String placeholderJoinMessage = this.joinMessage.replaceAll("%player%", player.getName());
+        player.sendMessage(placeholderJoinMessage); // player must see message
+        suite.broadcast(placeholderJoinMessage); // broadcast!
     }
 
     @Override

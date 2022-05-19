@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class AddonManager {
@@ -31,14 +32,15 @@ public class AddonManager {
 
         final PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new AddonListener(this, this.suiteManager), this.plugin);
+    }
 
+    public void loadAll() {
         // init our addons
         this.load(new AddonServerMessages());
         this.load(new AddonGlobalMessages());
         //this.load(new AddonBungeeCommands());
-    }
 
-    public void loadAll() {
+        // addon lookup
 //        for (File file : folder.listFiles()) {
 //            if (!(file.isFile() && file.getName().endsWith(".jar"))) continue;
 //            try {
@@ -61,17 +63,28 @@ public class AddonManager {
 
         addon.onEnable(); // initialize addon
 
+        // remove all commands registered
+        this.registeredCommands.removeIf(command -> command.getAddon().equals(addon));
+
         final PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.callEvent(new AddonEnableEvent(addon));
 
         this.plugin.getLogger().info("Loaded addon, " + addon.getName() + " v" + addon.getVersion() + ".");
     }
 
-    public void unload(Addon addon) {
-        this.registeredAddons.remove(addon);
+    public void unload(Addon addon, boolean remove) {
+        if (remove) this.registeredAddons.remove(addon);
+
+        addon.onDisable();
 
         final PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.callEvent(new AddonDisableEvent(addon));
+    }
+
+    public void reload() {
+        this.registeredAddons.forEach(addon -> this.unload(addon, false));
+        this.registeredAddons.clear();
+        this.loadAll();
     }
 
     public void registerCommand(AddonCommand command) {
@@ -86,8 +99,11 @@ public class AddonManager {
         return registeredAddons;
     }
 
+    public int size() {
+        return this.registeredAddons.size();
+    }
+
     public void forEach(Consumer<Addon> consumer) {
         this.registeredAddons.forEach(consumer);
     }
-
 }

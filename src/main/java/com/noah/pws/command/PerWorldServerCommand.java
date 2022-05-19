@@ -1,5 +1,6 @@
 package com.noah.pws.command;
 
+import com.noah.pws.addon.AddonManager;
 import com.noah.pws.config.ConfigSettings;
 import com.noah.pws.suite.Suite;
 import com.noah.pws.suite.SuiteManager;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 public class PerWorldServerCommand implements CommandExecutor {
 
     private static final String PREFIX = StringUtil.colorize("&8[&3PWS&8] &7");
+
     private static final String HELP_MENU = StringUtil.makeMenu(
             "PerWorldServer",
             null,
@@ -42,11 +44,19 @@ public class PerWorldServerCommand implements CommandExecutor {
             Pair.of("/pws suite list", "Lists all suites"),
             Pair.of("/pws suite reload", "Saves and reloads all suites"));
 
+    private static final String HELP_MENU_ADDONS = StringUtil.makeMenu(
+            "PerWorldServer",
+            "Addons",
+            Pair.of("/pws addon list", "Shows the addons currently active"),
+            Pair.of("/pws addon reload", "Reloads all addons"));
+
     private SuiteManager suiteManager;
+    private AddonManager addonManager;
     private ConfigSettings settings;
 
-    public PerWorldServerCommand(SuiteManager suiteManager, ConfigSettings settings) {
+    public PerWorldServerCommand(SuiteManager suiteManager, AddonManager addonManager, ConfigSettings settings) {
         this.suiteManager = suiteManager;
+        this.addonManager = addonManager;
         this.settings = settings;
     }
 
@@ -54,7 +64,7 @@ public class PerWorldServerCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("suite")) { sender.sendMessage(HELP_MENU_SUITES); return true; }
-            if (args[0].equalsIgnoreCase("addons")) { return true; }
+            if (args[0].equalsIgnoreCase("addons")) { sender.sendMessage(HELP_MENU_ADDONS); return true; }
             if (args[0].equalsIgnoreCase("reload")) {
                 this.settings.reload(true);
                 sender.sendMessage(PREFIX + StringUtil.colorize("Successfully reloaded &fconfig.yml&7."));
@@ -65,7 +75,14 @@ public class PerWorldServerCommand implements CommandExecutor {
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("suite")) {
                 if (args[1].equalsIgnoreCase("list")) {
-                    displaySuiteList(sender);
+                    sender.sendMessage(StringUtil.makeMenu(
+                        "PerWorldServer",
+                        "Suite List",
+                        this.suiteManager.getAllSuites()
+                                .stream()
+                                .map(suite -> Pair.of(suite.getName(), suite.getWorlds().size() + " world(s)"))
+                                .toArray(Pair[]::new)
+                    ));
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("reload")) {
@@ -83,6 +100,26 @@ public class PerWorldServerCommand implements CommandExecutor {
                 }
 
                 displaySuiteInfo(suite, sender);
+                return true;
+            }
+            if (args[0].equals("addon")) {
+                if (args[1].equalsIgnoreCase("reload")) {
+                    this.addonManager.reload();
+                    sender.sendMessage(PREFIX + StringUtil.colorize("Successfully reloaded &f" + this.addonManager.size() + " addons(s)&7."));
+                    return true;
+                }
+                if (args[1].equals("list")) {
+                    sender.sendMessage(StringUtil.makeMenu(
+                        "PerWorldServer",
+                        "Addons List",
+                        this.addonManager.getRegisteredAddons()
+                                .stream()
+                                .map(addon -> Pair.of(addon.getName(), "v" + addon.getVersion()))
+                                .toArray(Pair[]::new)
+                    ));
+                    return true;
+                }
+                sender.sendMessage(HELP_MENU_ADDONS);
                 return true;
             }
         }
@@ -186,20 +223,6 @@ public class PerWorldServerCommand implements CommandExecutor {
         return true;
     }
 
-    public void displaySuiteList(CommandSender sender) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("&7&m----------------------\n");
-        builder.append("&3&lPerWorldServer &7: &f&lSuite List\n");
-        builder.append("  \n");
-
-        this.suiteManager.getAllSuites().forEach(suite -> builder.append("&7 - &3" + suite.getName() + "  &f" + suite.getWorlds().size() + " world(s)\n"));
-
-        builder.append("  \n");
-        builder.append("&7&m----------------------\n");
-
-        sender.sendMessage(StringUtil.colorize(builder.toString()));
-    }
-
     public void displaySuiteInfo(Suite suite, CommandSender sender) {
         StringBuilder builder = new StringBuilder();
 
@@ -222,28 +245,6 @@ public class PerWorldServerCommand implements CommandExecutor {
         builder.append("&7&m----------------------");
 
         sender.sendMessage(StringUtil.colorize(builder.toString()));
-    }
-
-    public void displayHelpAddons(CommandSender sender) {
-        sender.sendMessage(StringUtil.colorize(
-                "&7&m----------------------\n" +
-                        "&3&lPerWorldServer &7: &f&lSuites\n" +
-                        "  \n" +
-                        "&7 - &3/pws suite <name>  &fLists suite information\n" +
-                        "&7 - &3/pws suite create <name>  &fCreates a suite\n" +
-                        "&7 - &3/pws suite destroy <name>  &fDestroys a suite\n" +
-                        "  \n" +
-                        "&7 - &3/pws suite <name> add <world>  &fAdds a world to a suite\n" +
-                        "&7 - &3/pws suite <name> remove <world>  &fRemoves a world from a suite\n" +
-                        "&7 - &3/pws suite <name> permission <world>  &fSets suite permission\n" +
-                        "&7 - &3/pws suite <name> rename <new name>  &fChanges suite name\n" +
-                        "&7 - &3/pws suite <name> spawn  &fSets suite spawn to current location\n" +
-                        "  \n" +
-                        "&7 - &3/pws suite list  &fLists all suites\n" +
-                        "&7 - &3/pws suite reload  &fSaves and reloads all suites\n" +
-                        "  \n" +
-                        "&7&m----------------------"
-        ));
     }
 
 }

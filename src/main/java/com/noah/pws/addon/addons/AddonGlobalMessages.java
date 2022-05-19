@@ -48,7 +48,7 @@ public class AddonGlobalMessages extends Addon {
         this.messageEnabled = StringUtil.colorize(config.getString("messages.enabled"));
         this.messageDisabled = StringUtil.colorize(config.getString("messages.disabled"));
 
-        this.getAddonManager().registerCommand(new AddonCommand("global", "pws.global") {
+        this.getAddonManager().registerCommand(new AddonCommand(this, "global", "pws.global") {
 
             @Override
             public boolean onExecute(Player player, String[] args) {
